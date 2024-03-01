@@ -5,7 +5,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new TexasHoldem();
+        Miscellaneous.convertToUpper("hello world");
 
     }
 
