@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class TexasHoldem {
-    static int Roundcounter = 1;
-
+    int Roundcounter = 1;
+    String[] table = {"_", " _", " _", " _", " _"};
     String[][] deck = {{"2h","2d","2c","2s",},
             {"3h","3d","3c","3s"},
             {"4h","4d","4c","4s"},
@@ -19,20 +19,21 @@ public class TexasHoldem {
 
     public TexasHoldem(){
 
-        String[] table = {"_", " _", " _", " _", " _"};
-
-
-
-        System.out.println("-------------------------------------------------\n" +
-                " h = hearts, d = diamonds, c = clubs, s = spades" +
-                "\n-------------------------------------------------");
-        shufflePersonal();
-        printTable(table, Roundcounter);
-
         ArrayList<String> globalHand = new ArrayList<>();
         Collections.addAll(globalHand,"11h", "5d", "8s", "5s", "3c");
         ArrayList<String> comb = new ArrayList<>();
         String[] personalHand = {"2c", "14d"};
+
+        int[] position = new int[5];
+        for(int i = 0; i<5; i++){
+            position[i] = (int) ((Math.random() * 5) + 1);
+        }
+
+        System.out.println("-------------------------------------------------\n" +
+                " h = hearts, d = diamonds, c = clubs, s = spades" +
+                "\n-------------------------------------------------");
+
+        printTable(table, Roundcounter);
 
         correctingBullshit(Bullshit(globalHand, comb), personalHand);
 
@@ -46,22 +47,22 @@ public class TexasHoldem {
             case 4 -> Round = "   [ River ]";
         }
         System.out.println(Round);
-        System.out.println("----------------");
+        System.out.println("---------------");
         for(String i : table){
             System.out.print(" " + i);
         }
-        System.out.println("\n----------------");
+
+        System.out.println("\n---------------");
     }
 
     public void Player(){
         System.out.println();
     }
     public void bot1(){
-
         String[] personalHand = new String[2];
 
         if(Roundcounter == 1){
-            personalHand = shufflePersonal();
+            personalHand = shuffle(2);
         }
 
     }
@@ -71,12 +72,15 @@ public class TexasHoldem {
     public void bot3(){
 
     }
-    public String[] shufflePersonal() {
-        String[] resultHand = new String[2];
+    public void bot4(){
+
+    }
+    public String[] shuffle(int length) {
+        String[] resultHand = new String[length];
         int ranCardY = 0;
         int ranCardX = 0;
 
-        for(int i = 0; i<2; i++) {
+        for(int i = 0; i<length; i++) {
             while (true) {
                 ranCardY = (int) (Math.random() * 13);
                 ranCardX = (int) (Math.random() * 4);
@@ -91,6 +95,18 @@ public class TexasHoldem {
         return resultHand;
     }
     public static List<List<String>> Bullshit(List<String> globalHand, List<String> comb) {
+     /*             %%%%%%
+                   %%%% = =
+                   %%C    >
+                    _)' _( .' ,
+                 __/ |_/\   " *. o
+                /` \_\ \/     %`= '_  .
+               /  )   \/|      .^',*. ,
+              /' /-   o/       - " % '_
+             /\_/     <       = , ^ ~ .
+             )_o|----'|          .`  '
+         ___// (_  - (\
+        ///-(    \'   \\     */
 
         //WARNING!!! I did not write this
 
@@ -113,8 +129,10 @@ public class TexasHoldem {
             result.addAll(Bullshit(new ArrayList<>(globalHand), newComb));
         }
         return result;
+
     }
     public static String[][] correctingBullshit(List<List<String>> globalHandComb, String[] personalHand){
+
         String[][] result = new String[10][5];
 
         for(int i = 0; i<10; i++){
@@ -127,10 +145,14 @@ public class TexasHoldem {
         return result;
     }
 
+    public void botCalculator(){
+
+    }
     public int royalFlush(){
 
         return 1;
     }
+
 
 
 }
