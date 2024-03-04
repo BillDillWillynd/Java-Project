@@ -1,9 +1,9 @@
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.util.*;
 
 public class TexasHoldem {
-    int Roundcounter = 0;
+    int roundCounter = 0;
     String[] table = {"_", "_", "_", "_", "_"};
+    int[][] toNumericHand = new int[10][5];
     String[][] deck = {{"2h","2d","2c","2s",},
             {"3h","3d","3c","3s"},
             {"4h","4d","4c","4s"},
@@ -31,18 +31,21 @@ public class TexasHoldem {
         Collections.addAll(fullGlobalHand, shuffle(5));
         ArrayList<String> globalHand = new ArrayList<>(Arrays.asList("0", "0", "0", "0", "0"));
 
-        String[] x = {"3h", "2h"};
-        ArrayList<String> y = new ArrayList<>(Arrays.asList("7s", "10h", "6s", "5h", "4c"));
+        String[] x = {"2s", "2h"};
+        ArrayList<String> y = new ArrayList<>(Arrays.asList("3c", "6d", "6s", "6h", "4c"));
 
-        while(Roundcounter < 5) {
+        int smallBlind = 25;
+        int bigBlind = 50;
+
+        while(roundCounter < 5) {
             printTable(fullGlobalHand);
             for (int j = 0; j<5; j++) {
                 if (position[j] == 0) {
                     player();
-                    cash[j] = cash[j] - 25;
+                    cash[j] = cash[j] - smallBlind;
                 } else if (position[j] == 1 ) {
                     bot1(globalHand);
-                    cash[j] = cash[j] - 50;
+                    cash[j] = cash[j] - bigBlind;
                 } else if (position[j] == 2 ) {
                     bot2();
                 } else if (position[j] == 3 ) {
@@ -51,21 +54,20 @@ public class TexasHoldem {
                     bot4();
                 }
             }
-            globalHand.set(Roundcounter, fullGlobalHand.get(Roundcounter));
-            Roundcounter++;
+            globalHand.set(roundCounter, fullGlobalHand.get(roundCounter));
+            roundCounter++;
         }
 
-
-
-       String[][] xyz = bubbleSort(correctingBullshit(Bullshit(y, new ArrayList<>()), x));
-        for(int i = 0; i<xyz.length; i++){
+        String[][] xyz = bubbleSort(correctingBullshit(Bullshit(y, new ArrayList<>()), x));
+        Straight(xyz);
+        for(int i = 0; i<toNumericHand.length; i++){
             System.out.println();
-            for(int j = 0; j<xyz[i].length; j++){
-                System.out.print(xyz[i][j] + " ");
+            for(int j = 0; j<toNumericHand[i].length; j++){
+                System.out.print(toNumericHand[i][j] + " ");
             }
         }
-        System.out.println(Straight(xyz));
-        System.out.println(Flush(xyz));
+
+        System.out.println("\n" + FourThreeOnePair(xyz));
 
     }
 
@@ -78,7 +80,7 @@ public class TexasHoldem {
     public void printTable(List<String> fullGlobalHand){
         boolean isEnd = false;
         String Round = "";
-        switch(Roundcounter){
+        switch(roundCounter){
             case 0:
                 System.out.println("-------------------------------------------------\n" +
                         " h = hearts, d = diamonds, c = clubs, s = spades" +
@@ -124,10 +126,10 @@ public class TexasHoldem {
         String[] personalHand = new String[2];
         ArrayList<String> comb = new ArrayList<>();
 
-        if(Roundcounter == 0){
+        if(roundCounter == 0){
             personalHand = shuffle(2);
         }else {
-            botCalculator(correctingBullshit(Bullshit(globalHand, comb), personalHand));
+           value[0] = botCalculator(correctingBullshit(Bullshit(globalHand, comb), personalHand));
         }
     }
     public void bot2(){
@@ -217,22 +219,17 @@ public class TexasHoldem {
     }
     public int Straight(String[][] result){
         String[][] sortedHand = bubbleSort(result);
-        int[][] numericSortedHand = new int[10][5];
-        for(int i = 0; i<10; i++) {
-            for(int j = 0; j<5; j++){
-                numericSortedHand[i][j] = Integer.parseInt(sortedHand[i][j].substring(0, sortedHand[i][j].length()-1));
-            }
-        }
+        ToNumericHand(result);
         int value = 2;
         int currentValue = 0;
-        int checkStraight = 0;
+        int checkStraight = 1;
 
         for(int k = 0; k < 10; k++) {
             for (int j = 0; j < 4; j++) {
-                if ((numericSortedHand[k][j] + 1) == numericSortedHand[k][j + 1]) {
+                if ((toNumericHand[k][j] + 1) == toNumericHand[k][j + 1]) {
                     checkStraight++;
-                    if (checkStraight == 4 && ((numericSortedHand[k][4] - 1) == numericSortedHand[k][3])) {
-                        currentValue = numericSortedHand[k][4];
+                    if (checkStraight == 5 && ((toNumericHand[k][4] - 1) == toNumericHand[k][3])) {
+                        currentValue = toNumericHand[k][4];
                         if (currentValue > value) {
                             value = currentValue;
                         }
@@ -241,7 +238,7 @@ public class TexasHoldem {
                     break;
                 }
             }
-            checkStraight = 0;
+            checkStraight = 1;
         }
         if(value > 2) value = value * 10000;
         return value;
@@ -264,9 +261,31 @@ public class TexasHoldem {
         }
         return value;
     }
-
-
-
+    public int FourThreeOnePair(String[][] result){
+        int value = 2;
+        int currentCount = 1;
+        int maxOfAKind = 1;
+        int twoPairCheck = 0;
+        for(int i = 0; i < 10; i++) {
+            for (int j = 0; j < 4; j++) {
+                if(toNumericHand[i][j] == toNumericHand[i][j+1]){
+                    currentCount++;
+                    if(currentCount > maxOfAKind){
+                        maxOfAKind = currentCount;
+                    }
+                }else currentCount = 0;
+            }
+            currentCount = 1;
+        }
+        if(maxOfAKind == 4){
+            return value * 10000000;
+        }else if(maxOfAKind == 3){
+            return value * 1000;
+        }else if(maxOfAKind == 2){
+            return value * 100;
+        }
+        return value;
+    }
     public String[][] bubbleSort(String[][] result) {
         String[][] sortedHand = new String[10][5];
         int count = 0;
@@ -290,6 +309,16 @@ public class TexasHoldem {
         }
         return sortedHand;
     }
+    public void ToNumericHand(String[][] hand){
+        int[][] numericSortedHand = new int[10][5];
+        for(int i = 0; i<10; i++) {
+            for(int j = 0; j<5; j++){
+                numericSortedHand[i][j] = Integer.parseInt(hand[i][j].substring(0, hand[i][j].length()-1));
+            }
+        }
+        toNumericHand = numericSortedHand;
+    }
+
 }
 
 
