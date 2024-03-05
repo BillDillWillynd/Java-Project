@@ -31,8 +31,8 @@ public class TexasHoldem {
         Collections.addAll(fullGlobalHand, shuffle(5));
         ArrayList<String> globalHand = new ArrayList<>(Arrays.asList("0", "0", "0", "0", "0"));
 
-        String[] x = {"2s", "2h"};
-        ArrayList<String> y = new ArrayList<>(Arrays.asList("3c", "6d", "6s", "6h", "4c"));
+        String[] x = {"2s", "10h"};
+        ArrayList<String> y = new ArrayList<>(Arrays.asList("3c", "6d", "7s", "7h", "4c"));
 
         int smallBlind = 25;
         int bigBlind = 50;
@@ -67,7 +67,7 @@ public class TexasHoldem {
             }
         }
 
-        System.out.println("\n" + FourThreeOnePair(xyz));
+        System.out.println("\n" + FourThreeOnePair());
 
     }
 
@@ -261,7 +261,7 @@ public class TexasHoldem {
         }
         return value;
     }
-    public int FourThreeOnePair(String[][] result){
+    public int FourThreeOnePair(){
         int value = 2;
         int currentCount = 1;
         int maxOfAKind = 1;
@@ -269,13 +269,15 @@ public class TexasHoldem {
         for(int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if(toNumericHand[i][j] == toNumericHand[i][j+1]){
+//                    value = toNumericHand[i][j];
                     currentCount++;
                     if(currentCount > maxOfAKind){
                         maxOfAKind = currentCount;
                     }
-                }else currentCount = 0;
+                }else{
+                    currentCount = 1;
+                }
             }
-            currentCount = 1;
         }
         if(maxOfAKind == 4){
             return value * 10000000;
@@ -286,6 +288,23 @@ public class TexasHoldem {
         }
         return value;
     }
+//    public int TwoPair(){
+//        int[] tempArr = new int[5];
+//        int value = 2;
+//        int currentCount = 1;
+//        for(int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 4; j++) {
+//                if(toNumericHand[i][j] == toNumericHand[i][j+1]){
+//                    currentCount++;
+//                    if(currentCount > maxOfAKind){
+//                        maxOfAKind = currentCount;
+//                    }
+//                }else currentCount = 1;
+//            }
+//            currentCount = 1;
+//        }
+//        return value;
+//    }
     public String[][] bubbleSort(String[][] result) {
         String[][] sortedHand = new String[10][5];
         int count = 0;
