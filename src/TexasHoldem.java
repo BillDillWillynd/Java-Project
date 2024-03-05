@@ -45,13 +45,13 @@ public class TexasHoldem {
             while (true) {
                 ranCardY = (int) (Math.random() * 13);
                 ranCardX = (int) (Math.random() * 4);
-                if (!deck[ranCardY][ranCardX].equals("0")) {
+                if (!deck[ranCardY][ranCardX].equals("00")) {
                     break;
                 }
             }
             resultHand[i] = deck[ranCardY][ranCardX];
         }
-        deck[ranCardY][ranCardX] = "0";
+        deck[ranCardY][ranCardX] = "00";
         return resultHand;
     }
 }
