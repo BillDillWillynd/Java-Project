@@ -67,7 +67,7 @@ public class RockPaperScissors {
             }
             if (rock > scissors) return "paper";
             else if (scissors > paper) return "rock";
-            else if(paper > scissors) return "paper";
+            else if(paper > scissors) return "scissors";
         }
         return rps[((int)(Math.random() * 2))];
     }
